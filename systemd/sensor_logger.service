@@ -1,0 +1,14 @@
+[Unit]
+Description=Raspberry Pi DHT22 Environmental Logger
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/chenyuyang/sensor.py
+WorkingDirectory=/home/chenyuyang
+StandardOutput=append:/home/chenyuyang/sensor_logger.log
+StandardError=append:/home/chenyuyang/sensor_logger_error.log
+Restart=always
+User=chenyuyang
+
+[Install]
+WantedBy=multi-user.target
