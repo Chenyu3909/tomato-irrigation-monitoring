@@ -87,9 +87,45 @@ This allowed data collection to run automatically rather than requiring the Pyth
 
 The completed monitoring system was deployed outdoors alongside the tomato plants for continuous environmental monitoring.
 
-<!-- Deployment photo will be added here. -->
+![Field deployment of the Raspberry Pi monitoring system](images/03_field_deployment.jpeg)
+
+*Monitoring system deployed outdoors alongside the tomato experiment.*
+
+![Interior of the field enclosure](images/04_enclosure_interior.jpeg)
+
+*Raspberry Pi, breadboard, ADS1115, and sensor wiring inside the field enclosure.*
 
 The electronics were housed in an outdoor enclosure while soil moisture sensors were positioned within the experimental growing area.
+
+## Hardware Development
+
+![Four-sensor bench test](images/02_four_sensor_bench_test.jpeg)
+
+*Bench testing the complete four-sensor system before field deployment.*
+
+![Raspberry Pi hardware build](images/01_hardware_build.jpeg)
+
+*Raspberry Pi, DHT22, ADS1115, breadboard, and soil-moisture sensor connections during development.*
+
+The outdoor electronics housing was also modeled for fabrication. The available STL exports are included in `cad/enclosure.stl` and `cad/enclosure-lid.stl`.
+
+## Bill of Materials
+
+The complete experiment hardware purchased for the project totaled **$280.77**.
+
+| Item | Category | Cost (USD) | Purpose |
+| --- | --- | ---: | --- |
+| Raspberry Pi 4 | Electronics | $134.99 | Data logger |
+| DHT22 | Sensor | $13.99 | Temperature/humidity |
+| ADS1115 | Electronics | $7.99 | Analog conversion |
+| Soil Sensors #1 & #2 | Sensor | $22.99 | Soil moisture sensing |
+| Soil Sensors #3 & #4 | Sensor | $22.99 | Soil moisture sensing |
+| Breadboard and Wires | Electronics | $9.99 | Prototyping and wiring |
+| Drip Irrigation System | Irrigation | $26.99 | Irrigation control |
+| Water Timer | Irrigation | $40.84 | Irrigation timing |
+| **Total** |  | **$280.77** |  |
+
+The irrigation hardware established the treatment schedules independently of the Raspberry Pi logger; the Python software documented in this repository monitored environmental conditions and did **not** control irrigation.
 
 ## Research Application
 
@@ -123,6 +159,10 @@ Soil sensors were assigned as follows:
 | Soil Sensor 4 | Control |
 
 The different irrigation schedules were used to generate contrasting soil moisture patterns that could be compared with fruit development and BER observations.
+
+![Tomato experiment and monitoring system](images/05_tomato_experiment.jpeg)
+
+*Monitoring system positioned within the outdoor experimental area.*
 
 ## Data
 
@@ -158,20 +198,32 @@ This process required troubleshooting hardware connections, sensor communication
 
 ## Results
 
-The system successfully generated a continuous environmental dataset used to analyze soil moisture patterns under the two irrigation treatments.
+The system successfully generated a continuous environmental dataset used to analyze soil moisture patterns under the two irrigation treatments. Monitoring ran for **37 days** at 15-minute intervals, producing more than **34,000 individual sensor measurements** across temperature, humidity, and four soil-moisture channels.
 
-<!-- Final figures will be added here. -->
+Because fruit development was still ongoing during the documented study period, the repository does not claim that either irrigation treatment caused or prevented BER. The emphasis here is the engineering system, field deployment, and resulting environmental dataset.
 
-Because the primary purpose of this repository is to document the monitoring system, research conclusions are reported separately from the software and hardware documentation.
+The research poster is included at [`assets/poster/research-poster.pdf`](assets/poster/research-poster.pdf).
 
 ## Repository Structure
 
 ```text
 tomato-irrigation-monitoring/
+├── assets/
+│   └── poster/
+│       └── research-poster.pdf
+├── cad/
+│   ├── enclosure.stl
+│   └── enclosure-lid.stl
 ├── data/
 │   ├── environment_log.csv
 │   ├── environment_log_old_dht_only.csv
 │   └── environment_log_predeployment.csv
+├── images/
+│   ├── 01_hardware_build.jpeg
+│   ├── 02_four_sensor_bench_test.jpeg
+│   ├── 03_field_deployment.jpeg
+│   ├── 04_enclosure_interior.jpeg
+│   └── 05_tomato_experiment.jpeg
 ├── src/
 │   └── sensor_logger.py
 ├── systemd/
