@@ -198,9 +198,27 @@ This process required troubleshooting hardware connections, sensor communication
 
 ## Results
 
-The system successfully generated a continuous environmental dataset used to analyze soil moisture patterns under the two irrigation treatments. Monitoring ran for **37 days** at 15-minute intervals, producing more than **34,000 individual sensor measurements** across temperature, humidity, and four soil-moisture channels.
+The system successfully generated a continuous environmental dataset used to analyze conditions under the two irrigation treatments. Monitoring ran for **37 days** at 15-minute intervals, producing more than **34,000 individual sensor measurements** across temperature, humidity, and four soil-moisture channels.
 
-Because fruit development was still ongoing during the documented study period, the repository does not claim that either irrigation treatment caused or prevented BER. The emphasis here is the engineering system, field deployment, and resulting environmental dataset.
+### Environmental Conditions
+
+![Temperature and humidity over time](data/temperature-humidity-over-time.png)
+
+*Temperature and relative humidity recorded in the planting field during the monitoring period.*
+
+### Soil Moisture by Irrigation Treatment
+
+![Average soil moisture under control and variable irrigation](data/soil-moisture-treatment-comparison.png)
+
+*Average raw soil-moisture sensor readings for the experimental and control treatments. The treatment averages followed broadly similar patterns during the plotted period.*
+
+### BER Observation
+
+![Tomato showing blossom-end rot symptoms](images/06_ber_observation.png)
+
+*Fruit observed with visible blossom-end rot symptoms during the study.*
+
+Because fruit development was still ongoing during the documented study period and the BER observation was limited, these results are not used to claim that either irrigation treatment caused or prevented BER. The emphasis of this repository is the engineering system, field deployment, and resulting environmental dataset.
 
 The research poster is included at [`assets/poster/research-poster.pdf`](assets/poster/research-poster.pdf).
 
@@ -217,13 +235,16 @@ tomato-irrigation-monitoring/
 ├── data/
 │   ├── environment_log.csv
 │   ├── environment_log_old_dht_only.csv
-│   └── environment_log_predeployment.csv
+│   ├── environment_log_predeployment.csv
+│   ├── soil-moisture-treatment-comparison.png
+│   └── temperature-humidity-over-time.png
 ├── images/
 │   ├── 01_hardware_build.jpeg
 │   ├── 02_four_sensor_bench_test.jpeg
 │   ├── 03_field_deployment.jpeg
 │   ├── 04_enclosure_interior.jpeg
-│   └── 05_tomato_experiment.jpeg
+│   ├── 05_tomato_experiment.jpeg
+│   └── 06_ber_observation.png
 ├── src/
 │   └── sensor_logger.py
 ├── systemd/
