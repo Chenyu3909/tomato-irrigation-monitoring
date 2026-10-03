@@ -48,41 +48,21 @@ I built the system in stages rather than wiring everything at once. I started wi
 
 The outdoor enclosure is documented by the exported STL files [`cad/enclosure.stl`](cad/enclosure.stl) and [`cad/enclosure-lid.stl`](cad/enclosure-lid.stl).
 
-## Data Logging
-
-The deployed Python logger is in [`src/sensor_logger.py`](src/sensor_logger.py).
-
-Each cycle records:
-
-- Timestamp
-- Temperature (°C)
-- Relative humidity (%)
-- Raw reading from each of four soil-moisture sensors
-- Voltage from each soil-moisture sensor
-
-The sampling interval is set to 900 seconds:
-
-```python
-SAMPLE_INTERVAL_SECONDS = 900
-```
-
-Temporary DHT22 read errors are caught instead of terminating the program, so a failed sensor read does not end the entire logging session.
-
-## Software
+## Software and Data Logging
 
 The monitoring software is written in **Python** and is available here:
 
 **[View the full sensor logger →](src/sensor_logger.py)**
 
-The logger initializes the DHT22 and ADS1115, reads all five sensors, timestamps each sampling cycle, and appends the results to a CSV file. Each row contains temperature, humidity, and both the raw ADC value and voltage for each of the four soil-moisture sensors.
+The logger initializes the DHT22 and ADS1115, reads temperature, humidity, and all four soil-moisture sensors, timestamps each sampling cycle, and appends the readings to a CSV file. Each soil sensor is recorded as both a raw ADC value and voltage.
 
-The main loop runs every 900 seconds (15 minutes):
+The sampling interval is set to 900 seconds (15 minutes):
 
 ```python
 SAMPLE_INTERVAL_SECONDS = 900
 ```
 
-I also added error handling for temporary DHT22 read failures so a bad reading does not stop the long-term logging session. The required Python packages are listed in [`requirements.txt`](requirements.txt).
+I added error handling for temporary DHT22 read failures so a bad reading would not stop a long-term logging session. The required Python packages are listed in [`requirements.txt`](requirements.txt).
 
 ## Automated Operation
 
@@ -226,4 +206,4 @@ If I rebuilt the system, I would:
 
 ## Acknowledgments
 
-This system was developed for a tomato irrigation research project at the **Boyce Thompson Institute**. Project hardware and materials were funded by BTI.
+This system was developed for a tomato irrigation research project at the **Boyce Thompson Institute (BTI)** under the mentorship of **Yao Chen, Translational Scientist at BTI/Cornell**. Project hardware and materials were funded by BTI.
