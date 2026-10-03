@@ -38,11 +38,11 @@ The DHT22 connects directly to the Raspberry Pi. Because the Pi has no built-in 
 
 I built the system in stages rather than wiring everything at once. I started with the DHT22, then added the ADS1115 and tested the soil sensors before combining all four into the final setup.
 
-![Raspberry Pi hardware build](images/01_hardware_build.jpeg)
+<img src="images/01_hardware_build.jpeg" width="650" alt="Raspberry Pi hardware build">
 
 *Raspberry Pi, breadboard, ADS1115, and sensor wiring during development.*
 
-![Four-sensor bench test](images/02_four_sensor_bench_test.jpeg)
+<img src="images/02_four_sensor_bench_test.jpeg" width="650" alt="Four-sensor bench test">
 
 *Bench testing the complete four-sensor setup before field deployment.*
 
@@ -68,17 +68,19 @@ I added error handling for temporary DHT22 read failures so a bad reading would 
 
 I configured the logger as a Linux `systemd` service, included at [`systemd/sensor_logger.service`](systemd/sensor_logger.service).
 
+The included service file reflects the original field deployment, where the logger was stored as `/home/chenyuyang/sensor.py`. The same logger is organized in this repository as [`src/sensor_logger.py`](src/sensor_logger.py).
+
 This let the Raspberry Pi run the monitoring program automatically instead of requiring me to manually start the script. During the original deployment, the service used `/home/chenyuyang` as its working directory and wrote readings to `environment_log.csv`.
 
 ## Field Deployment
 
 After indoor testing, I installed the electronics in an enclosure and deployed the system with the tomato plants.
 
-![Field deployment](images/03_field_deployment.jpeg)
+<img src="images/03_field_deployment.jpeg" width="650" alt="Field deployment">
 
 *Monitoring system deployed in the planting area.*
 
-![Enclosure interior](images/04_enclosure_interior.jpeg)
+<img src="images/04_enclosure_interior.jpeg" width="650" alt="Enclosure interior">
 
 *Raspberry Pi and sensor electronics inside the outdoor enclosure.*
 
@@ -130,13 +132,13 @@ The experiment included **20 tomato plants**, **5 cultivars**, and two irrigatio
 
 The irrigation schedules were controlled separately from the Raspberry Pi. The system documented in this repository was used for **monitoring and data logging**, not irrigation control.
 
-![Tomato experiment](images/05_tomato_experiment.jpeg)
+<img src="images/05_tomato_experiment.jpeg" width="650" alt="Tomato experiment">
 
 *Monitoring system positioned in the experimental growing area.*
 
 ### BER Observation
 
-![Tomato showing blossom-end rot](images/06_ber_observation.png)
+<img src="images/06_ber_observation.png" width="550" alt="Tomato showing blossom-end rot">
 
 *A fruit with visible blossom-end rot symptoms observed during the study.*
 
