@@ -1,6 +1,6 @@
 # Raspberry Pi Environmental Monitoring System
 
-I built this Raspberry Pi monitoring system for a tomato irrigation experiment at the **Boyce Thompson Institute (BTI)**. The goal was to collect soil moisture, temperature, and humidity continuously in the field without relying on manual measurements.
+I built this Raspberry Pi monitoring system for a tomato irrigation experiment at the **Boyce Thompson Institute (BTI)** under the mentorship of **Yao Chen, Translational Scientist at BTI/Cornell**. The goal was to collect soil moisture, temperature, and humidity continuously in the field without relying on manual measurements.
 
 I designed the hardware setup, integrated four analog soil-moisture sensors through an ADS1115 ADC, wrote the Python data logger, configured it to run automatically with `systemd`, and deployed the completed system outdoors. It logged measurements every **15 minutes for 37 days**, producing more than **34,000 individual sensor measurements**.
 
