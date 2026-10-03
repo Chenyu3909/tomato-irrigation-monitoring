@@ -1,286 +1,152 @@
 # Raspberry Pi Tomato Irrigation Monitoring System
 
-An automated environmental monitoring system developed for a tomato irrigation research project at the **Boyce Thompson Institute (BTI)**.
+I built this Raspberry Pi monitoring system for a tomato irrigation experiment at the **Boyce Thompson Institute (BTI)**. The goal was to collect temperature, humidity, and soil-moisture data continuously in the field so I could compare conditions under two irrigation schedules and study their relationship with blossom-end rot (BER).
 
-I built and programmed a Raspberry Pi-based system to continuously measure **temperature, humidity, and soil moisture across two irrigation treatments**. The system integrated four analog soil moisture sensors through an ADS1115 ADC and automatically logged measurements every 15 minutes for later analysis of soil moisture variability and blossom-end rot (BER).
+The final system used a Raspberry Pi 4, DHT22, ADS1115, and four capacitive soil-moisture sensors. A Python logger recorded all six sensor channels every 15 minutes and ran automatically with `systemd`.
 
-## System Overview
+## System
 
-The monitoring system was designed to collect environmental data continuously during an outdoor tomato experiment without requiring manual measurements.
-
-The Raspberry Pi collected data from two sensor systems:
-
-- A **DHT22** measured ambient temperature and relative humidity.
-- Four **capacitive soil moisture sensors** measured soil conditions across the experimental and control irrigation treatments.
-- An **ADS1115 analog-to-digital converter** allowed the Raspberry Pi to read all four analog soil moisture sensors.
-
-A Python program collected readings from all sensors, timestamped each measurement, and stored the data in a CSV file.
-
-The logger was configured as a Linux `systemd` service so monitoring could run automatically on the Raspberry Pi.
-
-## Hardware
-
-- Raspberry Pi 4
-- DHT22 temperature and humidity sensor
-- ADS1115 16-bit analog-to-digital converter
-- 4 capacitive soil moisture sensors
-- Breadboard
-- Jumper wires
-- Outdoor enclosure
-
-## System Architecture
+- **Raspberry Pi 4** — data logging and storage
+- **DHT22** — ambient temperature and relative humidity
+- **ADS1115** — analog-to-digital conversion for the soil sensors
+- **4 capacitive soil-moisture sensors** — two sensors per irrigation treatment
+- **Python + systemd** — automatic 15-minute logging
 
 ```text
                          ┌── DHT22
                          │   Temperature
                          │   Humidity
-                         │
 Raspberry Pi 4 ──────────┤
                          │
-                         └── ADS1115 ADC
-                                │
-                                ├── Soil Sensor 1 ── Experimental
-                                ├── Soil Sensor 2 ── Experimental
-                                ├── Soil Sensor 3 ── Control
-                                └── Soil Sensor 4 ── Control
+                         └── ADS1115
+                              ├── Soil 1 ── Experimental
+                              ├── Soil 2 ── Experimental
+                              ├── Soil 3 ── Control
+                              └── Soil 4 ── Control
 ```
 
-The DHT22 communicated directly with the Raspberry Pi, while the ADS1115 converted the analog outputs from the four soil moisture sensors into digital readings accessible through Python.
+The deployed logger is in [`src/sensor_logger.py`](src/sensor_logger.py). It saves a timestamp, temperature, humidity, and the raw value and voltage from each soil sensor. The sampling interval is set to 900 seconds (15 minutes).
 
-## Software
+## Building and Testing
 
-The monitoring software was written in **Python** using Adafruit CircuitPython libraries.
+I built the system in stages, starting with the DHT22 before adding the ADS1115 and four soil sensors. I tested the sensors in soil before combining everything into the final logger and configuring it to start automatically.
 
-The deployed logger is located at:
+![Hardware build](images/01_hardware_build.jpeg)
 
-`src/sensor_logger.py`
-
-Each sampling cycle records:
-
-- Timestamp
-- Temperature (°C)
-- Relative humidity (%)
-- Raw value from each of four soil moisture sensors
-- Voltage from each of four soil moisture sensors
-
-The sampling interval was set to:
-
-```python
-SAMPLE_INTERVAL_SECONDS = 900
-```
-
-which corresponds to one measurement every **15 minutes**.
-
-Sensor-reading errors from the DHT22 were handled without terminating the logger, allowing data collection to continue after temporary read failures.
-
-## Automated Operation
-
-The monitoring program was configured as a `systemd` service:
-
-`systemd/sensor_logger.service`
-
-The service automatically launched the monitoring program and used `/home/chenyuyang` as its working directory during the original deployment.
-
-This allowed data collection to run automatically rather than requiring the Python program to be manually restarted.
-
-## Field Deployment
-
-The completed monitoring system was deployed outdoors alongside the tomato plants for continuous environmental monitoring.
-
-![Field deployment of the Raspberry Pi monitoring system](images/03_field_deployment.jpeg)
-
-*Monitoring system deployed outdoors alongside the tomato experiment.*
-
-![Interior of the field enclosure](images/04_enclosure_interior.jpeg)
-
-*Raspberry Pi, breadboard, ADS1115, and sensor wiring inside the field enclosure.*
-
-The electronics were housed in an outdoor enclosure while soil moisture sensors were positioned within the experimental growing area.
-
-## Hardware Development
+*Early hardware integration with the Raspberry Pi, ADS1115, and sensors.*
 
 ![Four-sensor bench test](images/02_four_sensor_bench_test.jpeg)
 
-*Bench testing the complete four-sensor system before field deployment.*
+*Testing all four soil-moisture sensors before field deployment.*
 
-![Raspberry Pi hardware build](images/01_hardware_build.jpeg)
+The enclosure parts used for the outdoor setup are included as STL files in the [`cad/`](cad/) folder.
 
-*Raspberry Pi, DHT22, ADS1115, breadboard, and soil-moisture sensor connections during development.*
+## Field Deployment
 
-The outdoor electronics housing was also modeled for fabrication. The available STL exports are included in `cad/enclosure.stl` and `cad/enclosure-lid.stl`.
+After bench testing, I deployed the system outdoors with the tomato plants. The electronics were placed inside an enclosure, while the soil sensors were positioned in the experimental growing area.
 
-## Bill of Materials
+![Field deployment](images/03_field_deployment.jpeg)
 
-The complete experiment hardware purchased for the project totaled **$280.77**.
+*The monitoring system deployed in the planting area.*
 
-| Item | Category | Cost (USD) | Purpose |
-| --- | --- | ---: | --- |
-| Raspberry Pi 4 | Electronics | $134.99 | Data logger |
-| DHT22 | Sensor | $13.99 | Temperature/humidity |
-| ADS1115 | Electronics | $7.99 | Analog conversion |
-| Soil Sensors #1 & #2 | Sensor | $22.99 | Soil moisture sensing |
-| Soil Sensors #3 & #4 | Sensor | $22.99 | Soil moisture sensing |
-| Breadboard and Wires | Electronics | $9.99 | Prototyping and wiring |
-| Drip Irrigation System | Irrigation | $26.99 | Irrigation control |
-| Water Timer | Irrigation | $40.84 | Irrigation timing |
-| **Total** |  | **$280.77** |  |
+![Enclosure interior](images/04_enclosure_interior.jpeg)
 
-The irrigation hardware established the treatment schedules independently of the Raspberry Pi logger; the Python software documented in this repository monitored environmental conditions and did **not** control irrigation.
+*Raspberry Pi and sensor electronics inside the outdoor enclosure.*
 
-## Research Application
+## Experiment
 
-The monitoring system supported an experiment investigating:
+The research question was:
 
-**How does soil moisture variability affect tomato fruit quality and blossom-end rot (BER)?**
+> **How does soil moisture variability affect tomato fruit quality and blossom-end rot (BER)?**
 
-The experiment included:
+The experiment included **20 tomato plants**, **5 cultivars**, and **2 irrigation treatments**. Irrigation treatments began July 3, 2026.
 
-- **20 tomato plants**
-- **5 cultivars**
-- **2 irrigation treatments**
+| Treatment | Irrigation schedule | Sensors |
+| --- | --- | --- |
+| Control | 10 minutes every day | Soil 3 & 4 |
+| Experimental | 30 minutes every 3 days | Soil 1 & 2 |
 
-### Control Treatment
+The irrigation schedules were controlled separately from the Raspberry Pi. The Raspberry Pi system documented here was used for environmental monitoring and data logging, not irrigation control.
 
-10 minutes of irrigation each day.
+![Tomato experiment](images/05_tomato_experiment.jpeg)
 
-### Experimental Treatment
+*Monitoring system positioned in the outdoor experimental area.*
 
-30 minutes of irrigation every three days.
+## Data and Results
 
-Irrigation treatments began on **July 3, 2026**.
+The field logger ran for **37 days** at 15-minute intervals and produced more than **34,000 individual sensor measurements** across temperature, humidity, and four soil-moisture channels.
 
-Soil sensors were assigned as follows:
+The final dataset is in [`data/environment_log.csv`](data/environment_log.csv). I also kept the earlier DHT-only and pre-deployment logs to document the development process.
 
-| Sensor | Treatment |
-| --- | --- |
-| Soil Sensor 1 | Experimental |
-| Soil Sensor 2 | Experimental |
-| Soil Sensor 3 | Control |
-| Soil Sensor 4 | Control |
-
-The different irrigation schedules were used to generate contrasting soil moisture patterns that could be compared with fruit development and BER observations.
-
-![Tomato experiment and monitoring system](images/05_tomato_experiment.jpeg)
-
-*Monitoring system positioned within the outdoor experimental area.*
-
-## Data
-
-The final logger produced the dataset preserved as:
-
-`data/environment_log.csv`
-
-Additional files document earlier stages of system development:
-
-- `environment_log_old_dht_only.csv` — early DHT22-only logging
-- `environment_log_predeployment.csv` — system testing before outdoor deployment
-
-These files preserve the progression from initial sensor testing to the final multi-sensor monitoring system.
-
-During the original deployment, `environment_log.csv` was written to the logger's working directory. A copy of the resulting dataset is included in the `data/` directory of this repository for organization.
-
-## Engineering Process
-
-The monitoring system was developed iteratively rather than as a single completed build.
-
-Development included:
-
-1. Establishing temperature and humidity logging with the DHT22.
-2. Integrating an ADS1115 ADC with the Raspberry Pi.
-3. Connecting four analog capacitive soil moisture sensors.
-4. Testing sensor readings and soil moisture response.
-5. Combining environmental and soil measurements into one Python logger.
-6. Configuring automated 15-minute CSV logging.
-7. Running the logger automatically using `systemd`.
-8. Deploying the completed system outdoors for long-term data collection.
-
-This process required troubleshooting hardware connections, sensor communication, software dependencies, and reliable automated data collection before field deployment.
-
-## Results
-
-The system successfully generated a continuous environmental dataset used to analyze conditions under the two irrigation treatments. Monitoring ran for **37 days** at 15-minute intervals, producing more than **34,000 individual sensor measurements** across temperature, humidity, and four soil-moisture channels.
-
-### Environmental Conditions
+### Temperature and Humidity
 
 ![Temperature and humidity over time](data/temperature-humidity-over-time.png)
 
-*Temperature and relative humidity recorded in the planting field during the monitoring period.*
+### Soil Moisture
 
-### Soil Moisture by Irrigation Treatment
+![Average soil moisture by treatment](data/soil-moisture-treatment-comparison.png)
 
-![Average soil moisture under control and variable irrigation](data/soil-moisture-treatment-comparison.png)
-
-*Average raw soil-moisture sensor readings for the experimental and control treatments. The treatment averages followed broadly similar patterns during the plotted period.*
+The two treatment averages followed broadly similar patterns during the plotted period. Since the sensors report raw readings rather than calibrated volumetric water content, I kept the analysis descriptive rather than treating the values as absolute soil-moisture percentages.
 
 ### BER Observation
 
-![Tomato showing blossom-end rot symptoms](images/06_ber_observation.png)
+![Tomato showing blossom-end rot](images/06_ber_observation.png)
 
-*Fruit observed with visible blossom-end rot symptoms during the study.*
+*A fruit with visible blossom-end rot symptoms observed during the study.*
 
-Because fruit development was still ongoing during the documented study period and the BER observation was limited, these results are not used to claim that either irrigation treatment caused or prevented BER. The emphasis of this repository is the engineering system, field deployment, and resulting environmental dataset.
+Fruit development was still ongoing during the documented study period, and BER observations were limited. I therefore did not use these observations to claim that either irrigation treatment caused or prevented BER.
 
-The research poster is included at [`assets/poster/research-poster.pdf`](assets/poster/research-poster.pdf).
+The research poster is available here: [**Research Poster (PDF)**](assets/poster/research-poster.pdf).
 
-## Repository Structure
+## Cost
+
+Hardware and irrigation materials purchased for the project totaled **$280.77**. **Project costs were funded by the Boyce Thompson Institute (BTI).**
+
+| Item | Cost | Purpose |
+| --- | ---: | --- |
+| Raspberry Pi 4 | $134.99 | Data logger |
+| DHT22 | $13.99 | Temperature/humidity |
+| ADS1115 | $7.99 | Analog conversion |
+| Soil Sensors #1 & #2 | $22.99 | Soil-moisture sensing |
+| Soil Sensors #3 & #4 | $22.99 | Soil-moisture sensing |
+| Breadboard and wires | $9.99 | Prototyping and wiring |
+| Drip irrigation system | $26.99 | Irrigation |
+| Water timer | $40.84 | Irrigation timing |
+| **Total** | **$280.77** | |
+
+## Repository
 
 ```text
 tomato-irrigation-monitoring/
-├── assets/
-│   └── poster/
-│       └── research-poster.pdf
-├── cad/
-│   ├── enclosure.stl
-│   └── enclosure-lid.stl
-├── data/
-│   ├── environment_log.csv
-│   ├── environment_log_old_dht_only.csv
-│   ├── environment_log_predeployment.csv
-│   ├── soil-moisture-treatment-comparison.png
-│   └── temperature-humidity-over-time.png
-├── images/
-│   ├── 01_hardware_build.jpeg
-│   ├── 02_four_sensor_bench_test.jpeg
-│   ├── 03_field_deployment.jpeg
-│   ├── 04_enclosure_interior.jpeg
-│   ├── 05_tomato_experiment.jpeg
-│   └── 06_ber_observation.png
-├── src/
-│   └── sensor_logger.py
-├── systemd/
-│   └── sensor_logger.service
-├── .gitignore
+├── assets/poster/       # research poster
+├── cad/                 # enclosure STL files
+├── data/                # field data, test data, and plots
+├── images/              # build and deployment photos
+├── src/                 # Python logger
+├── systemd/             # automatic logger service
 ├── requirements.txt
 └── README.md
 ```
 
 ## Running the Logger
 
-Install the required Python libraries:
+Install the required libraries:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Run the logger:
+Then run:
 
 ```bash
 python3 src/sensor_logger.py
 ```
 
-The program creates or appends to `environment_log.csv` in the directory from which the logger is run and records a new set of measurements every 15 minutes.
+The program creates or appends to `environment_log.csv` in its working directory. Hardware connections must match the GPIO and ADS1115 channel assignments in the logger.
 
-> Hardware connections must match the GPIO and ADS1115 channel assignments defined in `sensor_logger.py`.
+## What I Would Improve
 
-## Future Improvements
-
-Possible improvements to the monitoring system include:
-
-- Calibrating soil sensors to convert raw readings into estimated volumetric water content.
-- Increasing biological and sensor replication.
-- Adding automated irrigation control based on experimental treatment schedules.
-- Improving weather protection for long-term outdoor electronics.
-- Adding remote monitoring or visualization of incoming sensor data.
+If I continued the system, I would calibrate the soil sensors to estimate volumetric water content, add more sensor replication, improve weather protection, and add remote data visualization. I would also explore integrating irrigation control so the monitoring and treatment systems could operate from the same platform.
 
 ## Technologies
 
@@ -288,4 +154,4 @@ Possible improvements to the monitoring system include:
 
 ## Acknowledgments
 
-This monitoring system was developed as part of a tomato research project at the **Boyce Thompson Institute**.
+This project was completed as part of tomato research at the **Boyce Thompson Institute**. Hardware and experimental material costs were funded by BTI.
